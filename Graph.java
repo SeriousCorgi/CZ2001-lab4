@@ -56,10 +56,10 @@ public class Graph {
             do {
                 idx1 = rand.nextInt(numVertices);
                 idx2 = rand.nextInt(numVertices);
-            } while (idx1 == idx2 || matrix[idx1][idx2] != 0 );
+            } while (idx1 == idx2 || matrix[idx1][idx2] != 0 ); // No duplicated edges
             System.out.println(idx1 + " " + idx2);
-            matrix[idx1][idx2] += 1;
-            matrix[idx2][idx1] += 1;
+            matrix[idx1][idx2] = 1;
+            matrix[idx2][idx1] = 1;
         }
     }
 
