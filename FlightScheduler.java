@@ -19,17 +19,23 @@ public class FlightScheduler {
 		while (true){
 			System.out.println("Enter Departure city (type -1 to quit):");
 			depart = sc.next();
-			if (depart == "-1"){ break; }
-			else if (!cities.contains(depart)){ break; }
+			if (depart.equals("-1")){ break; }
+			else if (!cities.contains(depart)){
+				System.out.println("--City not found. Please try again!!--");
+				continue;
+			}
 
 			System.out.println("Enter Arrival city: ");
 			arrive = sc.next();
-			if (!cities.contains(arrive)){ break; }
+			if (!cities.contains(arrive)){
+				System.out.println("--City not found. Please try again!!--");
+				continue;
+			}
 			
 			start_time = System.nanoTime();
 			flight.bfs(depart, arrive, matrix);
 			end_time = System.nanoTime();
-			time = (start_time - end_time)/1000000.0;
+			time = (end_time - start_time)/1000000.0;
 			System.out.println("Execution time (in nanosecond): " + time);
 			System.out.println("==================================================");
 		}
@@ -75,17 +81,18 @@ public class FlightScheduler {
 			visited[city] = true;
 			if (city == arrival){
 				found = true;
-				route.add(city);
-				int prev;
+				int prev = city;
+				route.add(prev);
 				do{
-					prev = previous.get(city);
+					prev = previous.get(prev);
 					route.add(prev);
 				} while (prev != departure);
+				break;
 			}else{
 				for (int i = 0; i < noOfCities; i++){
-					if ((matrix[city][i] == 1) && (visited[i] == false)){ // Check if there's an route with current city & if i is not visited
+					if (matrix[city][i] == 1 && visited[i] == false){ // Check if there's an route with current city & if i is not visited
 						q.add(i);
-						previous.put(i, city);
+						previous.put(i, city); // Connects parents city to sub cities
 					} 
 				}
 			}
@@ -94,8 +101,12 @@ public class FlightScheduler {
 		if (found){
 			Collections.reverse(route);
 			System.out.println("The shortest route is: ");
-			for (int i : route){
-				System.out.print(cities.get(i) + " --> ");
+			for (Integer i : route){
+				if ( i != arrival){
+					System.out.print(cities.get(i) + " --> ");
+				} else{
+					System.out.print(cities.get(i));
+				}
 			}
 			System.out.println();
 		} else{
