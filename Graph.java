@@ -7,7 +7,7 @@ public class Graph {
     private Random rand = new Random();
     public int getnumVertices(){ return numVertices; }
     public int getNumEdges(){ return numEdges; }
-    public int[][] matrix(){ return matrix; }
+    public int[][] getMatrix(){ return matrix; }
 
 
     public Graph(int numVertices, int numEdges){
