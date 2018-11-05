@@ -60,5 +60,5 @@ public class Graph {
             matrix[idx1][idx2] = 1;
             matrix[idx2][idx1] = 1;
         }
-  }
+    }
 }
