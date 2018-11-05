@@ -1,69 +1,80 @@
 import java.util.*;
 
 public class FlightScheduler {
-	static ArrayList<String> cities = new ArrayList<String> (Arrays.asList("Singapore", "Hanoi", "Bali", "Seoul", "Tokyo", "Hokkaido", "Manila", "Sydney", "Hong Kong", "Sydney", "Beijing", "Shanghai", "Los Angeles"));	
-	private int noOfCities = cities.size();
-
-	public FlightScheduler(){}
+	static ArrayList<String> cities = new ArrayList<String> (Arrays.asList("Singapore","Kuala Lumpur","Jakarta","Bali","Bangkok",
+            "Hanoi","Manila","Cebu","Perth","Melbourne","Sydney","Auckland","Port Moresby","Taipei","Tokyo","Osaka","Sapporo",
+            "Hong Kong","Shanghai", "Beijing","Seoul","New Delhi", "Mumbai","Doha","Dubai","Tel Aviv","Istanbul","Cairo","Johannesburg",
+            "Cape Town","Casa Blanca","Kiev","Vienna", "Athens","London","Geneva","Stockholm","Madrid","Lisbon","Frankfurt","Copenhagen",
+            "Amsterdam", "Paris","Berlin","Rome","Moscow","Havana","Port-au-Prince","New York", "Los Angeles","Chicago","San Francisco",
+            "Mexico City","Ottawa","Brasilia","Rio de Janeiro","Santiago", "Lima","La Paz","Buenos Aires"));//60 cities
 
 	public static void main(String[] args){
 		Scanner sc = new Scanner(System.in);
+		FlightScheduler flight = new FlightScheduler();
 		double start_time = 0;
 		double end_time = 0;
 		double time = 0;
 		String depart, arrive;
 
-		FlightScheduler flight = new FlightScheduler();
-		int[][] matrix = flight.adjacencyMatrix();
-
 		while (true){
-			System.out.println("Enter Departure city (type -1 to quit):");
-			depart = sc.next();
-			if (depart.equals("-1")){ break; }
-			else if (!cities.contains(depart)){
-				System.out.println("--City not found. Please try again!!--");
-				continue;
-			}
+			System.out.println("Choose mode:");
+			System.out.println("1. Showcase mode");
+			System.out.println("2. Experiment");
+			System.out.println("3. Exit");
+			System.out.println("==================\n");
+			switch (sc.nextInt()) {
+				case 1: System.out.println("Choose number of cities");
+					int c = sc.nextInt();
+					int max = c * (c - 1) / 2;
+					int min = c - 1;
+					Random rand = new Random();
+					Graph graph = new Graph(c, rand.nextInt(max - min + 1) + min);
+					int[][] matrix = graph.getMatrix();
+					Collections.shuffle(cities); // Randomize cities order
 
-			System.out.println("Enter Arrival city: ");
-			arrive = sc.next();
-			if (!cities.contains(arrive)){
-				System.out.println("--City not found. Please try again!!--");
-				continue;
+					for (int i = 0; i < c; i++){
+						System.out.print(flight.cities.get(i) + "  ");
+					}
+					System.out.println("\n\nAdjacency Matrix");
+					System.out.println(Arrays.deepToString(matrix).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+					System.out.println("\n");
+					
+					while (true){
+						System.out.println("Enter Departure city (type -1 to quit):");
+						depart = sc.next();
+						if (depart.equals("-1")){ break; }
+						else if (!cities.contains(depart)){
+							System.out.println("--City not found. Please try again!!--");
+							continue;
+						}
+
+						System.out.println("Enter Arrival city: ");
+						arrive = sc.next();
+						if (!cities.contains(arrive)){
+							System.out.println("--City not found. Please try again!!--");
+							continue;
+						}
+						
+						start_time = System.nanoTime();
+						flight.bfs(depart, arrive, matrix, c);
+						end_time = System.nanoTime();
+						time = (end_time - start_time) / 1000000.0;
+						System.out.println("Execution time (in nanosecond): " + time);
+						System.out.println("==================================================");
+					}
+					break;
+				case 2:
+				case 3: return;
+				default: System.out.println("Invalid choice");
+					 break;
 			}
-			
-			start_time = System.nanoTime();
-			flight.bfs(depart, arrive, matrix);
-			end_time = System.nanoTime();
-			time = (end_time - start_time)/1000000.0;
-			System.out.println("Execution time (in nanosecond): " + time);
-			System.out.println("==================================================");
 		}
 	}
 
-	public int[][] adjacencyMatrix(){
-		int[][] matrix = new int[noOfCities][noOfCities];
-		int a, b;
-		Random rand = new Random();
-
-		for (a = 0; a < noOfCities; a++){
-			for (b = 0; b < noOfCities; b++){
-				matrix[a][b] = rand.nextInt(2); 
-			}
-		}
-		
-		// Set Matrix to symmetric diagonally
-		for (a = 0; a < noOfCities; a++){
-			for (b = 0; b < a; b++){
-				matrix[a][b] = matrix [b][a];
-			}
-			matrix[a][a] = 0;
-		}
-		return matrix;
-	}
-
-	public void bfs(String depart, String arrive, int[][] matrix){
+	public void bfs(String depart, String arrive, int[][] matrix, int noOfCities){
 		int city;
+
+		// convert depart and arrive city into integer 
 		int departure = cities.indexOf(depart);
 		int arrival = cities.indexOf(arrive);
 
@@ -86,21 +97,21 @@ public class FlightScheduler {
 				do{
 					prev = previous.get(prev);
 					route.add(prev);
-				} while (prev != departure);
+				} while(prev != departure);
 				break;
-			}else{
+			} else{
 				for (int i = 0; i < noOfCities; i++){
-					if (matrix[city][i] == 1 && visited[i] == false){ // Check if there's an route with current city & if i is not visited
+					if (matrix[city][i] == 1 && !q.contains(i) && visited[i] == false){ // Check if there's an route with current city & if i is not visited
 						q.add(i);
 						previous.put(i, city); // Connects parents city to sub cities
-					} 
+					}
 				}
 			}
 		}
 		
 		if (found){
 			Collections.reverse(route);
-			System.out.println("The shortest route is: ");
+			System.out.println("\nThe shortest route is: ");
 			for (Integer i : route){
 				if ( i != arrival){
 					System.out.print(cities.get(i) + " --> ");

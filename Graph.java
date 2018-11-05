@@ -57,14 +57,8 @@ public class Graph {
                 idx1 = rand.nextInt(numVertices);
                 idx2 = rand.nextInt(numVertices);
             } while (idx1 == idx2 || matrix[idx1][idx2] != 0 ); // No duplicated edges
-            System.out.println(idx1 + " " + idx2);
             matrix[idx1][idx2] = 1;
             matrix[idx2][idx1] = 1;
         }
-    }
-
-  public static void main(String[] args) {
-      Graph graph = new Graph(5, 7);
-      System.out.println(Arrays.deepToString(graph.matrix).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
   }
 }
