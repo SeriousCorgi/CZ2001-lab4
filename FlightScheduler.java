@@ -169,7 +169,7 @@ public class FlightScheduler {
             end_time = System.nanoTime();
             time = (end_time - start_time) / 1000000.0;
             aveTime += time;
-            System.out.println("Execution time round "+ i +": " + time);
+            System.out.println("Execution time round "+ (i+1) +": " + time);
         }
         System.out.println("==================================================");
         System.out.println("Average execution time: " + (aveTime/numLoop));
