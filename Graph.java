@@ -5,8 +5,6 @@ public class Graph {
     private int numEdges;
     private int[][] matrix;
     private Random rand = new Random();
-    public int getnumVertices(){ return numVertices; }
-    public int getNumEdges(){ return numEdges; }
     public int[][] getMatrix(){ return matrix; }
 
 
